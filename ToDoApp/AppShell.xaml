@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- AppShell.xaml — Le routeur de l'application -->
+<!-- Shell = le conteneur de navigation (comme BrowserRouter en React) -->
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:ToDoApp"
+       x:Class="ToDoApp.AppShell"
+       Shell.FlyoutBehavior="Disabled">
+
+    <!-- ShellContent = une page accessible -->
+    <!-- C'est comme <Route path="/" element={<MainPage/>}/> en React -->
+    <ShellContent
+        Title="Mes Taches"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage"/>
+
+</Shell>

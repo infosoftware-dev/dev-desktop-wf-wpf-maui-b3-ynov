@@ -1,0 +1,30 @@
+# Build results
+bin/
+obj/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+packages/
+*.nupkg
+project.lock.json
+project.assets.json
+
+# .NET
+*.dll
+*.exe
+!**/Properties/launchSettings.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SQLite databases (optionnel - retirer si vous voulez les inclure)
+# *.db
+# *.sqlite

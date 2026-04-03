@@ -1,0 +1,172 @@
+﻿
+<Window x:Class="NotesApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Notes App — MVVM" 
+        Height="650" Width="950"
+        WindowStartupLocation="CenterScreen"
+        Background="#ECF0F1">
+
+    <Window.Resources>
+        <!-- Styles globaux -->
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="BorderBrush" Value="#CBD5E0"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.85"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ==========================================
+             FORMULAIRE (gauche)
+             ========================================== -->
+        <Border Grid.Column="0" Background="White" CornerRadius="8"
+                Padding="20" Margin="0,0,10,0">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" Opacity="0.1" BlurRadius="8"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="Note" FontSize="22" FontWeight="Bold"
+                           Foreground="#1B2838" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Titre" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <!-- BINDING : lie le TextBox a la propriete Titre du ViewModel -->
+                <!-- UpdateSourceTrigger=PropertyChanged : met a jour a chaque frappe -->
+                <TextBox Text="{Binding Titre, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Catégorie" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding Categorie, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                <TextBlock Text="Contenu" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <!-- AcceptsReturn : permet les retours a la ligne (comme un <textarea>) -->
+                <TextBox Text="{Binding Contenu, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         Height="120" VerticalScrollBarVisibility="Auto"/>
+
+                <!-- COMMAND au lieu de Click : le bouton est lie a AjouterCommand -->
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <Button Content="Ajouter"
+                            Command="{Binding AjouterCommand}"
+                            Background="#2EC4B6" Foreground="White" Margin="0,0,8,0"/>
+                    <Button Content="Modifier"
+                            Command="{Binding ModifierCommand}"
+                            Background="#3B82F6" Foreground="White" Margin="0,0,8,0"/>
+                    <Button Content="Supprimer"
+                            Command="{Binding SupprimerCommand}"
+                            Background="#EF4444" Foreground="White"/>
+                </StackPanel>
+
+                <Button Content="Vider le formulaire"
+                        Command="{Binding ViderCommand}"
+                        Background="#718096" Foreground="White"
+                        Margin="0,10,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ==========================================
+             LISTE DES NOTES (droite)
+             ========================================== -->
+        <Border Grid.Column="1" Background="White" CornerRadius="8" Padding="20">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" Opacity="0.1" BlurRadius="8"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Mes notes" FontSize="22"
+                           FontWeight="Bold" Foreground="#1B2838" Margin="0,0,0,10"/>
+
+                <!-- Recherche liee a la propriete Recherche du ViewModel -->
+                <TextBox Grid.Row="1"
+                         Text="{Binding Recherche, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- ==========================================
+                     LISTBOX avec DATATEMPLATE PERSONNALISE
+                     Le DataTemplate definit COMMENT afficher chaque note.
+                     C'est comme le contenu du .map() en React :
+                     
+                     {notes.map(note => (
+                       <div className="card">
+                         <div className="avatar">{note.initiales}</div>
+                         <div>
+                           <b>{note.titre}</b>
+                           <span>{note.dateFormatee}</span>
+                         </div>
+                       </div>
+                     ))}
+                     ========================================== -->
+                <ListBox Grid.Row="2"
+                         ItemsSource="{Binding Notes}"
+                         SelectedItem="{Binding NoteSelectionnee}"
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Chaque note s'affiche comme une carte -->
+                            <Border Margin="0,0,0,8" Padding="12"
+                                    Background="#F8F9FA" CornerRadius="6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="45"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Avatar cercle avec les initiales -->
+                                    <Border Grid.Column="0"
+                                            Width="40" Height="40"
+                                            CornerRadius="20"
+                                            Background="#2EC4B6"
+                                            Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding Initiales}"
+                                                   Foreground="White"
+                                                   FontWeight="Bold" FontSize="14"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- Infos de la note -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Titre}"
+                                                   FontSize="15" FontWeight="Bold"
+                                                   Foreground="#1B2838"/>
+                                        <TextBlock Text="{Binding DateFormatee}"
+                                                   FontSize="11" Foreground="#718096"
+                                                   Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Compteur lie a la propriete Compteur du ViewModel -->
+                <TextBlock Grid.Row="3" Text="{Binding Compteur}"
+                           Margin="0,10,0,0" Foreground="#718096" FontSize="12"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

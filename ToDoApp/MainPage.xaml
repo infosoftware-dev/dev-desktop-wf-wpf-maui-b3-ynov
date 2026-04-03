@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- MainPage.xaml — La page principale avec la liste des taches -->
+<!-- ContentPage = l'equivalent de Window en WPF -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoApp.MainPage"
+             Title="Mes Taches"
+             BackgroundColor="#ECF0F1">
+
+    <!-- VerticalStackLayout = StackPanel en WPF = Flexbox column -->
+    <Grid Padding="20" RowSpacing="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Titre -->
+            <RowDefinition Height="Auto"/>   <!-- Barre d'ajout -->
+            <RowDefinition Height="*"/>      <!-- Liste -->
+            <RowDefinition Height="Auto"/>   <!-- Compteur -->
+        </Grid.RowDefinitions>
+
+        <!-- TITRE -->
+        <Label Grid.Row="0"
+               Text="Mes Taches"
+               FontSize="28" FontAttributes="Bold"
+               TextColor="#1B2838"/>
+
+        <!-- BARRE D'AJOUT : champ + bouton sur la meme ligne -->
+        <!-- HorizontalStackLayout = StackPanel Horizontal en WPF -->
+        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+            <!-- Entry = TextBox en WPF = <input> en HTML -->
+            <Entry x:Name="txtNouvelleTache"
+                   Placeholder="Nouvelle tache..."
+                   FontSize="16"
+                   WidthRequest="300"
+                   BackgroundColor="White"/>
+
+            <!-- Button : Clicked = Click en WPF -->
+            <Button Text="Ajouter"
+                    Clicked="BtnAjouter_Clicked"
+                    FontAttributes="Bold"
+                    BackgroundColor="#2EC4B6"
+                    TextColor="White"/>
+        </HorizontalStackLayout>
+
+        <!-- LISTE DES TACHES -->
+        <!-- CollectionView = l'equivalent de DataGrid/ListBox en WPF -->
+        <CollectionView Grid.Row="2"
+                        x:Name="listeTaches"
+                        SelectionMode="None">
+
+            <!-- ItemTemplate = DataTemplate en WPF = .map() en React -->
+            <!-- Definit COMMENT afficher chaque tache -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <!-- Frame = Border en WPF (carte avec ombre) -->
+                    <Frame BackgroundColor="White"
+                           CornerRadius="8"
+                           Padding="15"
+                           Margin="0,0,0,8"
+                           HasShadow="True">
+
+                        <Grid ColumnSpacing="15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- CheckBox pour marquer comme terminee -->
+                            <CheckBox Grid.Column="0"
+                                      IsChecked="{Binding EstTerminee}"
+                                      CheckedChanged="CheckBox_Changed"/>
+
+                            <!-- Titre de la tache -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="Center">
+                                <Label Text="{Binding Titre}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1B2838"/>
+                                <Label Text="{Binding Description}"
+                                       FontSize="13"
+                                       TextColor="#718096"/>
+                            </VerticalStackLayout>
+
+                            <!-- Bouton supprimer -->
+                            <Button Grid.Column="2"
+                                    Text="X"
+                                    Clicked="BtnSupprimer_Clicked"
+                                    CommandParameter="{Binding Id}"
+                                    BackgroundColor="#EF4444"
+                                    TextColor="White"
+                                    FontAttributes="Bold"
+                                    WidthRequest="40"
+                                    HeightRequest="40"
+                                    CornerRadius="20"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <!-- Message quand la liste est vide -->
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Padding="40">
+                    <Label Text="Aucune tache"
+                           FontSize="20"
+                           TextColor="#718096"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Ajoutez votre premiere tache ci-dessus"
+                           FontSize="14"
+                           TextColor="#A0AEC0"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+        </CollectionView>
+
+        <!-- COMPTEUR en bas -->
+        <Label Grid.Row="3" x:Name="lblCount"
+               FontSize="13" TextColor="#718096"/>
+
+    </Grid>
+</ContentPage>

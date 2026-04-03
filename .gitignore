@@ -28,3 +28,7 @@ Thumbs.db
 # SQLite databases (optionnel - retirer si vous voulez les inclure)
 # *.db
 # *.sqlite
+
+# Fichiers d'évaluation (usage formateur uniquement)
+EVALUATION_QCM.md
+EVALUATION_TP.md
